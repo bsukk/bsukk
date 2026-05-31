@@ -114,6 +114,28 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
 
 </div>
 
-</body>
+</body> 
+
+    <script>
+async function updateStatus() {
+  const res = await fetch(
+    "https://api.lanyard.rest/v1/users/YOUR_DISCORD_ID"
+  );
+  const json = await res.json();
+
+  const statusMap = {
+    online: "🟢 Online",
+    idle: "🌙 Idle",
+    dnd: "⛔ Do Not Disturb",
+    offline: "⚫ Offline"
+  };
+
+  document.getElementById("discord-status").textContent =
+    statusMap[json.data.discord_status];
+}
+
+updateStatus();
+setInterval(updateStatus, 15000);
+</script>
 </html>
 <p>
