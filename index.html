@@ -82,6 +82,12 @@ body::before{
     font-size:28px;
     margin:0 10px;
 }
+
+#discord-presence{
+    margin-top:10px;
+    font-size:1rem;
+    opacity:0.85;
+}
 </style>
 
 <link rel="stylesheet"
@@ -93,7 +99,6 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
 <audio id="bgMusic" autoplay loop>
     <source src="music.mp3" type="audio/mpeg">
 </audio>
-
 
 <div class="profile">
 
@@ -107,13 +112,64 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
 
     <div class="bio">i have no enemies</div>
 
+    <!-- DISCORD STATUS SHOWS HERE -->
+    <div id="discord-presence">Loading Discord status...</div>
+
     <div class="socials">
-  <a href="https://discord.gg/https://discord.gg/yztwAAgV" target="_blank">
-    <i class="fab fa-discord"></i>
-  </a>
+        <a href="https://discord.gg/yztwAAgV" target="_blank">
+            <i class="fab fa-discord"></i>
+        </a>
+    </div>
 
 </div>
 
+<!-- DISCORD PRESENCE SCRIPT -->
+<script>
+const userId = "1254550540562468914";
+
+async function updateDiscordPresence() {
+    try {
+        const response = await fetch(`https://api.lanyard.rest/v1/users/${userId}`);
+        const json = await response.json();
+        const data = json.data;
+
+        let text = "";
+
+        switch (data.discord_status) {
+            case "online":
+                text = "🟢 Online";
+                break;
+            case "idle":
+                text = "🌙 Idle";
+                break;
+            case "dnd":
+                text = "⛔ Do Not Disturb";
+                break;
+            default:
+                text = "⚫ Offline";
+        }
+
+        const game = data.activities.find(a => a.type === 0);
+
+        if (game) {
+            text += `<br>🎮 Playing ${game.name}`;
+        }
+
+        if (data.listening_to_spotify) {
+            text += `<br>🎵 Listening to ${data.spotify.song} - ${data.spotify.artist}`;
+        }
+
+        document.getElementById("discord-presence").innerHTML = text;
+
+    } catch (err) {
+        document.getElementById("discord-presence").textContent =
+            "Discord status unavailable";
+    }
+}
+
+updateDiscordPresence();
+setInterval(updateDiscordPresence, 15000);
+</script>
+
 </body>
 </html>
-<p>
