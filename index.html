@@ -133,6 +133,18 @@ async function updateDiscordPresence() {
         const json = await response.json();
         const data = json.data;
 
+        // Sync avatar
+        document.getElementById("discord-avatar").src =
+            `https://cdn.discordapp.com/avatars/${userId}/${data.discord_user.avatar}.png?size=512`;
+
+        // Sync display name / nickname
+        document.getElementById("discord-name").textContent =
+            data.discord_user.display_name || data.discord_user.username;
+
+        // Sync username
+        document.getElementById("discord-username").textContent =
+            "@" + data.discord_user.username;
+
         let text = "";
 
         switch (data.discord_status) {
