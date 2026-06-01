@@ -41,15 +41,60 @@ body::before{
     color:white;
 }
 
+.avatar-wrapper{
+    position:relative;
+    width:110px;
+    height:110px;
+    margin:0 auto 15px;
+}
+
 .avatar{
     width:110px;
     height:110px;
     border-radius:50%;
     border:5px solid #111;
-    display:block;
-    margin:0 auto 15px;
     object-fit:cover;
     box-shadow:0 0 25px rgba(0,0,0,.5);
+}
+
+.status-badge{
+    position:absolute;
+    bottom:5px;
+    right:5px;
+    width:24px;
+    height:24px;
+    border-radius:50%;
+    border:4px solid #111;
+    background:#80848e;
+    transition:.3s;
+}
+
+.status-badge.online{
+    background:#23a55a;
+}
+
+.status-badge.idle{
+    background:#f0b232;
+}
+
+.status-badge.offline{
+    background:#80848e;
+}
+
+.status-badge.dnd{
+    background:#f23f43;
+}
+
+.status-badge.dnd::after{
+    content:"";
+    position:absolute;
+    width:12px;
+    height:4px;
+    background:white;
+    border-radius:4px;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
 }
 
 .name{
@@ -94,13 +139,20 @@ body::before{
 
 <div class="profile">
 
-    <img class="avatar" src="https://i.pinimg.com/736x/71/8b/e0/718be04d19d6ffb41853d21e26ce9f8a.jpg">
+    <div class="avatar-wrapper">
+        <img class="avatar"
+        src="https://i.pinimg.com/736x/71/8b/e0/718be04d19d6ffb41853d21e26ce9f8a.jpg">
+
+        <div id="discord-badge" class="status-badge offline"></div>
+    </div>
 
     <div class="name">biboy</div>
     <div class="username">@ب</div>
     <div class="bio">stackz , aknem , xorev</div>
 
-    <div id="discord-presence">Loading Discord status...</div>
+    <div id="discord-presence">
+        Loading Discord status...
+    </div>
 
     <div class="socials">
         <a href="https://discord.gg/yztwAAgV" target="_blank">
@@ -115,24 +167,37 @@ const userId = "1254550540562468914";
 
 async function updateDiscordPresence() {
     try {
-        const response = await fetch(`https://api.lanyard.rest/v1/users/${userId}`);
-        const json = await response.json();
+        const response = await fetch(
+            `https://api.lanyard.rest/v1/users/${userId}`
+        );
 
+        const json = await response.json();
         const data = json.data;
+
+        const badge = document.getElementById("discord-badge");
+
+        badge.className = "status-badge";
 
         let text = "";
 
         switch (data.discord_status) {
             case "online":
+                badge.classList.add("online");
                 text = "🟢 Online";
                 break;
+
             case "idle":
+                badge.classList.add("idle");
                 text = "🌙 Idle";
                 break;
+
             case "dnd":
+                badge.classList.add("dnd");
                 text = "⛔ Do Not Disturb";
                 break;
+
             default:
+                badge.classList.add("offline");
                 text = "⚫ Offline";
         }
 
