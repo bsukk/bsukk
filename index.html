@@ -129,6 +129,18 @@ body::before{
     opacity:.85;
 }
 </style>
+
+    #typing{
+    border-right:2px solid #fff;
+    padding-right:3px;
+    animation:blink .7s infinite;
+}
+
+@keyframes blink{
+    50%{
+        border-color:transparent;
+    }
+}
 </head>
 
 <body>
@@ -148,7 +160,7 @@ body::before{
 
     <div class="name">biboy</div>
     <div class="username">@ب</div>
-    <div class="bio">stackz , aknem , xorev</div>
+    <div class="bio"><span id="typing"></span></div>
 
     <div id="discord-presence">
         Loading Discord status...
