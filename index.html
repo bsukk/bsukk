@@ -129,8 +129,13 @@ const userId = "1254550540562468914";
 
 async function updateDiscordPresence() {
     try {
-        const response = await fetch(https://api.lanyard.rest/v1/users/${userId});
+        const response = await fetch(`https://api.lanyard.rest/v1/users/${userId}`);
         const json = await response.json();
+
+        if (!json.success || !json.data) {
+            throw new Error("No Discord data");
+        }
+
         const data = json.data;
 
         let text = "";
@@ -139,29 +144,35 @@ async function updateDiscordPresence() {
             case "online":
                 text = "🟢 Online";
                 break;
+
             case "idle":
                 text = "🌙 Idle";
                 break;
+
             case "dnd":
                 text = "⛔ Do Not Disturb";
                 break;
+
             default:
                 text = "⚫ Offline";
         }
 
-        const game = data.activities.find(a => a.type === 0);
+        if (data.activities && data.activities.length) {
+            const game = data.activities.find(a => a.type === 0);
 
-        if (game) {
-            text += <br>🎮 Playing ${game.name};
+            if (game) {
+                text += `<br>🎮 Playing ${game.name}`;
+            }
         }
 
-        if (data.listening_to_spotify) {
-            text += <br>🎵 Listening to ${data.spotify.song} - ${data.spotify.artist};
+        if (data.listening_to_spotify && data.spotify) {
+            text += `<br>🎵 Listening to ${data.spotify.song} - ${data.spotify.artist}`;
         }
 
         document.getElementById("discord-presence").innerHTML = text;
 
     } catch (err) {
+        console.error(err);
         document.getElementById("discord-presence").textContent =
             "Discord status unavailable";
     }
