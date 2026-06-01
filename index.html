@@ -180,32 +180,28 @@ async function updateDiscordPresence() {
 
         let text = "";
 
-        switch (data.discord_status) {
-            case "online":
-                badge.classList.add("online");
-                text = "🟢 Online";
-                break;
+switch (data.discord_status) {
+    case "online":
+        badge.classList.add("online");
+        break;
 
-            case "idle":
-                badge.classList.add("idle");
-                text = "🌙 Idle";
-                break;
+    case "idle":
+        badge.classList.add("idle");
+        break;
 
-            case "dnd":
-                badge.classList.add("dnd");
-                text = "⛔ Do Not Disturb";
-                break;
+    case "dnd":
+        badge.classList.add("dnd");
+        break;
 
-            default:
-                badge.classList.add("offline");
-                text = "⚫ Offline";
-        }
+    default:
+        badge.classList.add("offline");
+}
 
-        if (data.listening_to_spotify && data.spotify) {
-            text += `<br>🎵 Listening to ${data.spotify.song} - ${data.spotify.artist}`;
-        }
+if (data.listening_to_spotify && data.spotify) {
+    text = `🎵 Listening to ${data.spotify.song} - ${data.spotify.artist}`;
+}
 
-        document.getElementById("discord-presence").innerHTML = text;
+document.getElementById("discord-presence").innerHTML = text;
 
     } catch {
         document.getElementById("discord-presence").textContent =
