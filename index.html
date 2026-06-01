@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>biboy</title>
+<title>BIBOY</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -32,6 +32,48 @@ body::before{
     inset:0;
     background:rgba(0,0,0,.35);
     backdrop-filter:blur(4px);
+}
+
+/* CLICK TO ENTER SCREEN */
+
+#intro{
+    position:fixed;
+    inset:0;
+    background:#000;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    z-index:99999;
+    cursor:pointer;
+    transition:opacity .8s ease;
+}
+
+#intro.hidden{
+    opacity:0;
+    pointer-events:none;
+}
+
+.intro-content{
+    text-align:center;
+}
+
+.intro-content h1{
+    font-size:6rem;
+    font-weight:700;
+    color:white;
+    letter-spacing:4px;
+    text-shadow:0 0 20px rgba(255,255,255,.15);
+}
+
+.intro-content h1 span{
+    color:#ff4438;
+}
+
+.intro-content p{
+    margin-top:15px;
+    color:#888;
+    letter-spacing:8px;
+    font-size:12px;
 }
 
 .profile{
@@ -128,12 +170,27 @@ body::before{
     font-size:1rem;
     opacity:.85;
 }
+
+@media(max-width:768px){
+    .intro-content h1{
+        font-size:3rem;
+    }
+}
 </style>
 </head>
 
 <body>
 
-<audio id="bgMusic" autoplay loop>
+<!-- ENTER SCREEN -->
+<div id="intro">
+    <div class="intro-content">
+        <h1>BIBOY</h1>
+        <p>— CLICK TO ENTER —</p>
+    </div>
+</div>
+
+<!-- MUSIC -->
+<audio id="bgMusic" loop>
     <source src="music.mp3" type="audio/mpeg">
 </audio>
 
@@ -163,6 +220,26 @@ body::before{
 </div>
 
 <script>
+/* ENTER SCREEN + MUSIC */
+
+const intro = document.getElementById("intro");
+const music = document.getElementById("bgMusic");
+
+intro.addEventListener("click", async () => {
+    try{
+        await music.play();
+
+        intro.classList.add("hidden");
+
+        setTimeout(() => {
+            intro.remove();
+        }, 800);
+
+    }catch(err){
+        console.log(err);
+    }
+});
+
 const userId = "1254550540562468914";
 
 async function updateDiscordPresence() {
@@ -180,28 +257,28 @@ async function updateDiscordPresence() {
 
         let text = "";
 
-switch (data.discord_status) {
-    case "online":
-        badge.classList.add("online");
-        break;
+        switch (data.discord_status) {
+            case "online":
+                badge.classList.add("online");
+                break;
 
-    case "idle":
-        badge.classList.add("idle");
-        break;
+            case "idle":
+                badge.classList.add("idle");
+                break;
 
-    case "dnd":
-        badge.classList.add("dnd");
-        break;
+            case "dnd":
+                badge.classList.add("dnd");
+                break;
 
-    default:
-        badge.classList.add("offline");
-}
+            default:
+                badge.classList.add("offline");
+        }
 
-if (data.listening_to_spotify && data.spotify) {
-    text = `🎵 Listening to ${data.spotify.song} - ${data.spotify.artist}`;
-}
+        if (data.listening_to_spotify && data.spotify) {
+            text = `🎵 Listening to ${data.spotify.song} - ${data.spotify.artist}`;
+        }
 
-document.getElementById("discord-presence").innerHTML = text;
+        document.getElementById("discord-presence").innerHTML = text;
 
     } catch {
         document.getElementById("discord-presence").textContent =
